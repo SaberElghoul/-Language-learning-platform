@@ -1,0 +1,48 @@
+app_disponibility:
+    resource: "@AppBundle/Controller/disponibilityController.php"
+    type:     annotation
+
+app_student:
+    resource: "@AppBundle/Controller/StudentController.php"
+    type:     annotation
+
+app_teacher:
+    resource: "@AppBundle/Controller/TeacherController.php"
+    type:     annotation
+
+
+
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+app_student_languages:
+    resource: "@AppBundle/Controller/StudentLanguagesController.php"
+    type:     annotation
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+fos_user_registration_register:
+    path: /register
+    controller: AppBundle\Controller\RegistrationController::registerAction
+
+fos_teacher_profile_show  :
+    path: /teacher_profile/
+    controller: AppBundle\Controller\TeacherProfileController::showAction
+
+
+fos_teacher_profile_edit :
+    path: /teacher_profile/edit_teacher
+    controller: AppBundle\Controller\TeacherProfileController::editAction
+
+
+fos_user_profile_edit :
+    path: /student_profile/edit
+    controller: AppBundle\Controller\ProfileController::editAction
+
+fos_user_profile_show  :
+    path: /profile/
+    controller: AppBundle\Controller\ProfileController::showAction
+

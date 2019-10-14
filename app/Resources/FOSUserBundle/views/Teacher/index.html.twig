@@ -1,0 +1,182 @@
+{% extends "@FOSUser/TeacherLayout.html.twig" %}
+{% block fos_user_content %}
+
+
+    <h2   class="page page-header"> Teachers List </h2>
+    <table class="table table-hover">
+        <tbody>
+        {% for teacher in teachers %}
+            <tr  >
+                <td>     <a class="media-avatar pull-left" href="{{ path('teacher_show', { 'id': teacher.id }) }}">
+                        <img src="{{ asset ('uploads/images/'~ teacher.image) }}" width="88" height="80"alt="user avatar"/>
+
+                    </a></td>
+                <td>{{ teacher.username }}</td>
+                <td>{{ teacher.headline }}</td>
+                <td>{{ teacher.pays }}</td>
+                <td>
+                    <button id="goRoom" onclick="Connect({{ teacher.id }})" class="md-btn" data-uk-modal="{target:'#modal_lightbox'}">Private lesson</button>
+                    <div class="uk-modal" id="modal_lightbox">
+                        <div class="uk-modal-dialog uk-modal-dialog-lightbox">
+                            <button type="button" class="uk-modal-close uk-close uk-close-alt"></button>
+                            <div class='video-container'>
+                                <video class='userVideo' id="localVideo" autoplay></video>
+                                <video class='peerVideo' id='remoteVideo' autoplay></video>
+                            </div>
+                            <style>
+
+                                .video-container {
+                                    position:relative;
+                                }
+                                .userVideo {
+                                    height: 100px;
+                                    width: 100px;
+                                    float: left;
+                                    position: absolute;
+                                }
+
+                                .peerVideo {
+                                    height: 500px;
+                                    width: 500px;
+                                    position: absolute;
+                                }
+                            </style>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script >
+
+
+         function Connect(i) {
+
+             var inputRoomNumber = i;
+             var btnGoRoom = document.getElementById("goRoom");
+             var localVideo = document.getElementById("localVideo");
+             var remoteVideo = document.getElementById("remoteVideo");
+
+             // variables
+             var ok = false
+             var roomNumber;
+             var localStream;
+             var remoteStream;
+             var rtcPeerConnection;
+             var iceServers = {
+                 'iceServers': [
+                     {'url': 'stun:stun.services.mozilla.com'},
+                     {'url': 'stun:stun.l.google.com:19302'}
+                 ]
+             }
+             var streamConstraints = {audio: true, video: true};
+             var isCaller;
+
+             // Let's do this
+             var socket = io.connect('http://localhost:3000');
+             socket.emit('create or join', inputRoomNumber);
+
+
+             // message handlers
+             socket.on('created', function (room) {
+                 navigator.mediaDevices.getUserMedia(streamConstraints).then(function (stream) {
+                     localStream = stream;
+                     localVideo.src = URL.createObjectURL(stream);
+                     isCaller = true;
+                 }).catch(function (err) {
+                     console.log('An error ocurred when accessing media devices');
+                 });
+             });
+
+             socket.on('joined', function (room) {
+                 navigator.mediaDevices.getUserMedia(streamConstraints).then(function (stream) {
+                     localStream = stream;
+                     localVideo.src = URL.createObjectURL(stream);
+                     socket.emit('ready', roomNumber);
+                 }).catch(function (err) {
+                     console.log('An error ocurred when accessing media devices');
+                 });
+             });
+
+             socket.on('candidate', function (event) {
+                 var candidate = new RTCIceCandidate({
+                     sdpMLineIndex: event.label,
+                     candidate: event.candidate
+                 });
+                 rtcPeerConnection.addIceCandidate(candidate);
+             });
+
+             socket.on('ready', function () {
+                 if (isCaller) {
+                     rtcPeerConnection = new RTCPeerConnection(iceServers);
+                     rtcPeerConnection.onicecandidate = onIceCandidate;
+                     rtcPeerConnection.onaddstream = onAddStream;
+                     rtcPeerConnection.addStream(localStream);
+                     rtcPeerConnection.createOffer(setLocalAndOffer, function (e) {
+                         console.log(e)
+                     });
+                 }
+             });
+
+             socket.on('offer', function (event) {
+                 if (!isCaller) {
+                     rtcPeerConnection = new RTCPeerConnection(iceServers);
+                     rtcPeerConnection.onicecandidate = onIceCandidate;
+                     rtcPeerConnection.onaddstream = onAddStream;
+                     rtcPeerConnection.addStream(localStream);
+                     rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+                     rtcPeerConnection.createAnswer(setLocalAndAnswer, function (e) {
+                         console.log(e)
+                     });
+                 }
+             });
+
+             socket.on('answer', function (event) {
+                 rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+             })
+
+             // handler functions
+             function onIceCandidate(event) {
+                 if (event.candidate) {
+                     console.log('sending ice candidate');
+                     socket.emit('candidate', {
+                         type: 'candidate',
+                         label: event.candidate.sdpMLineIndex,
+                         id: event.candidate.sdpMid,
+                         candidate: event.candidate.candidate,
+                         room: roomNumber
+                     })
+                 }
+             }
+
+             function onAddStream(event) {
+                 remoteVideo.src = URL.createObjectURL(event.stream);
+                 remoteStream = event.stream;
+             }
+
+             function setLocalAndOffer(sessionDescription) {
+                 rtcPeerConnection.setLocalDescription(sessionDescription);
+                 socket.emit('offer', {
+                     type: 'offer',
+                     sdp: sessionDescription,
+                     room: roomNumber
+                 });
+             }
+
+             function setLocalAndAnswer(sessionDescription) {
+                 rtcPeerConnection.setLocalDescription(sessionDescription);
+                 socket.emit('answer', {
+                     type: 'answer',
+                     sdp: sessionDescription,
+                     room: roomNumber
+                 });
+             }
+         }
+    </script>
+
+{% endblock %}
+

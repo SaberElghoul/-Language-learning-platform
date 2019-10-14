@@ -1,0 +1,25 @@
+{% extends "@FOSUser/TeacherLayout.html.twig" %}
+{% block fos_user_content %}
+
+
+
+    <h2   class="page page-header"> Students List </h2>
+    <table class="table table-hover">
+        <tbody>
+        {% for student in students %}
+            <tr >
+                <td>     <a class="media-avatar pull-left" href="{{ path('student_showforteacher', { 'id': student.id }) }}">
+                        <img src="{{ asset ('uploads/images/'~ student.image) }}" width="88" height="80"alt="user avatar"/>
+
+                    </a></td>
+                <td>{{ student.username }}</td>
+                <td>{{ student.headline }}</td>
+                <td>{{ student.pays }}</td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

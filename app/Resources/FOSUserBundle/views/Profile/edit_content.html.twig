@@ -1,0 +1,11 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="col-lg-5">
+{{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
+    {{ form_widget(form) }}
+    <div>
+        <input type="submit" class="btn btn-primary" value="Save Changes"/>
+        <a href="#" class="btn md-btn-danger">Cancel</a>
+    </div>
+{{ form_end(form) }}
+</div>

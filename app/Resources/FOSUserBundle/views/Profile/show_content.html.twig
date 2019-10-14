@@ -1,0 +1,215 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<div class="uk-grid" data-uk-grid-margin data-uk-grid-match id="user_profile">
+    <div  class="uk-width-large-10-10">
+        <div class="md-card">
+            <div class="user_heading">
+                <div class="user_heading_menu" data-uk-dropdown="{pos:'left-top'}">
+                    <i class="md-icon material-icons md-icon-light">&#xE5D4;</i>
+
+                </div>
+                <div class="user_heading_avatar">
+                    <div class="thumbnail">
+                        <img src="{{ asset ('uploads/images/'~ user.image) }}" alt="user avatar"/>
+                    </div>
+                </div>
+                <div class="user_heading_content">
+                    <h2 class="heading_b uk-margin-bottom"><span class="uk-text-truncate">{{ user.username }}</span><span class="sub-heading">{{ user.Headline }}</span><span class="sub-heading">{{ user.pays }}</span></h2>
+
+                </div>
+                <a class="md-fab md-fab-small md-fab-accent" href="{{ path('fos_user_profile_edit') }}">
+                    <i class="material-icons">&#xE150;</i>
+                </a>
+            </div>
+            <div class="user_content">
+                <ul id="user_profile_tabs" class="uk-tab" data-uk-tab="{connect:'#user_profile_tabs_content', animation:'slide-horizontal'}" data-uk-sticky="{ top: 48, media: 960 }">
+
+
+                </ul>
+                <ul id="user_profile_tabs_content" class="uk-switcher uk-margin">
+                    <li>
+                        <div class="uk-grid uk-margin-medium-top uk-margin-large-bottom" data-uk-grid-margin>
+                            <div class="uk-width-large-1-2">
+                                <h4 class="heading_c uk-margin-small-bottom">Contact Info</h4>
+                                <ul class="md-list md-list-addon">
+                                    <li>
+                                        <div class="md-list-addon-element">
+                                            <i class="md-list-addon-icon material-icons">&#xE158;</i>
+                                        </div>
+                                        <div class="md-list-content">
+                                                        <span class="md-list-heading">
+
+                                                                {{ user.email }} </span>
+                                            <span class="uk-text-small uk-text-muted">Email</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="md-list-addon-element">
+                                            <i class="md-list-addon-icon material-icons">&#xE0CD;</i>
+                                        </div>
+                                        <div class="md-list-content">
+                                            <span class="md-list-heading">{{ user.phoneNumber }}</span>
+                                            <span class="uk-text-small uk-text-muted">Phone</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="md-list-addon-element">
+                                            <i class="md-list-addon-icon uk-icon-facebook-official"></i>
+                                        </div>
+                                        <div class="md-list-content">
+                                            <span class="md-list-heading">facebook.com/{{ user.facebook }}</span>
+                                            <span class="uk-text-small uk-text-muted">Facebook</span>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="md-list-addon-element">
+                                            <i class="md-list-addon-icon uk-icon-twitter"></i>
+                                        </div>
+                                        <div class="md-list-content">
+                                            <span class="md-list-heading">twitter.com/{{ user.twitter }}</span>
+                                            <span class="uk-text-small uk-text-muted">Twitter</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="uk-width-large-1-2">
+                                <h4 class="heading_c uk-margin-small-bottom">About</h4>
+                                <ul class="md-list md-list-addon">
+                                    <li>
+                                        <div class="md-list-addon-element">
+                                            <i class="md-list-addon-icon material-icons">info</i>
+                                        </div>
+                                        <div class="md-list-content">
+                                                        <span class="md-list-heading">
+
+                                                                {{ user.about }} </span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                        <div class="uk-grid uk-margin-medium-top uk-margin-large-bottom" data-uk-grid-margin>
+                            <div  >
+                                <h4 class="heading_c uk-margin-small-bottom">Languages</h4>
+
+
+                                <ul class="md-list md-list-addon">
+                                    <!-- Button trigger modal -->
+                                    <!-- Button trigger modal -->
+
+
+                                    <li>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                            Add New Language
+                                        </button>
+                                    </li>
+
+                                    {% for studLang in studentsLanguages %}
+                                    <li>
+                                        <table style="width:100%">
+
+                                            <tr>
+
+                                                <td>
+                                                    {{ studLang.languages.name }} :
+                                                    {{ studLang.level }}
+                                                    {% if studLang.level starts with 'B'  %}
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 32%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ studLang.level }}</div>
+                                                    </div></td>
+                                                {% endif %}
+                                                {% if studLang.level starts with 'E'  %}
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">{{ studLang.level }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if studLang.level starts with 'I'  %}
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">{{ studLang.level }}</div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if studLang.level starts with 'A'  %}
+                                                    <div class="progress">
+                                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{ studLang.level }}</div>
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                                <td><a   href="{{ path('languageDelete', { 'id': studLang.id }) }}"> X </a> </td>
+
+                                            </tr>
+
+                                        </table>
+
+
+
+                                    </li>
+                                            {% endfor %}
+
+
+
+
+                                    </ul>
+                            </div>
+
+
+
+
+
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Button trigger modal -->
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Add new language</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="Add" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+                {{ form_end(form) }}
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+

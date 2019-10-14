@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Studentlanguages list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Level</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for studentLanguage in studentLanguages %}
+            <tr>
+                <td><a href="{{ path('studentlanguages_show', { 'id': studentLanguage.id }) }}">{{ studentLanguage.id }}</a></td>
+                <td>{{ studentLanguage.level }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('studentlanguages_show', { 'id': studentLanguage.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('studentlanguages_edit', { 'id': studentLanguage.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('studentlanguages_new') }}">Create a new studentLanguage</a>
+        </li>
+    </ul>
+{% endblock %}
